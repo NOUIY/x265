@@ -132,7 +132,7 @@ void determineLevel(const x265_param &param, VPS& vps)
         vps.ptl.levelIdc = Level::LEVEL8_5;
         vps.ptl.tierFlag = Level::MAIN;
     }
-    else if (param.uhdBluray)
+    else if (param.uhdBluray || bitrate == 0)
     {
         i = 8;
         vps.ptl.levelIdc = levels[i].levelEnum;
