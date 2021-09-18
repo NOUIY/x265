@@ -98,5 +98,5 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
-        name: x265-win64-${{matrix.target_cpu}}-${{matrix.toolchain}}
+        name: x265-win64-${{matrix.target_cpu}}
         path: dist/*
