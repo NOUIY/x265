@@ -2,7 +2,7 @@
 
 find_package(Git)
 
-set(MOD_BUILD Yuuki)
+set(MOD_BUILD Kasumi)
 
 execute_process(COMMAND
     ${GIT_EXECUTABLE} describe --tags --first-parent HEAD
@@ -11,11 +11,7 @@ execute_process(COMMAND
         ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
-if("${MOD_BUILD}" STREQUAL "Yuuki")
-    set(X265_BASE_BRANCH "stable")
-else()
-    set(X265_BASE_BRANCH "old-stable")
-endif()
+set(X265_BASE_BRANCH "stable")
 
 execute_process(COMMAND
     ${GIT_EXECUTABLE} describe --tags --first-parent origin/${X265_BASE_BRANCH}
