@@ -184,9 +184,11 @@ bool LavfInput::readPicture(x265_picture& p_pic, InputFileInfo* info)
         }
 
         if(ret >= 0)
-            av_packet_free(&pkt);
+            av_packet_unref(pkt);
     }
     while(!finished && !fail && ret >= 0);
+
+    av_packet_free(&pkt);
 
     if(!finished || fail)
         return false;
