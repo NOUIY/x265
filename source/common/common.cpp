@@ -31,11 +31,11 @@
 #include <sys/timeb.h>
 #include <io.h>
 #include <fcntl.h>
-#include <Windows.h>
 #else
 #include <sys/time.h>
-#include <time.h>
 #endif
+
+#include <chrono>
 
 #ifdef USE_MIMALLOC
 #include <mimalloc.h>
@@ -49,21 +49,7 @@ int g_checkFailures;
 
 int64_t x265_mdate(void)
 {
-#if _WIN32
-    static LARGE_INTEGER freq {};
-    if (freq.QuadPart == 0) [[unlikely]] QueryPerformanceFrequency(&freq);
-    LARGE_INTEGER qpc;
-    QueryPerformanceCounter(&qpc);
-    return qpc.QuadPart * 1000000 / freq.QuadPart;
-#else
-    struct timespec tv_date;
-#ifdef CLOCK_MONOTONIC_RAW
-    clock_gettime(CLOCK_MONOTONIC_RAW, &tv_date);
-#else
-    clock_gettime(CLOCK_MONOTONIC, &tv_date);
-#endif
-    return (int64_t)tv_date.tv_sec * 1000000 + (int64_t)tv_date.tv_nsec / 1000;
-#endif
+    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 
 #define X265_ALIGNBYTES 64
