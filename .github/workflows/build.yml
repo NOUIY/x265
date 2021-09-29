@@ -21,31 +21,33 @@ jobs:
       with:
         path: x265
         fetch-depth: 0
+    - name: Get dependencies versions
+      run: |
+        echo ("ffrev=" + ((git submodule status ffmpeg) -split ' ')[0]) >> $env:GITHUB_ENV
+        echo ("mirev=" + ((git submodule status mimalloc) -split ' ')[0]) >> $env:GITHUB_ENV
+      shell: pwsh
+      working-directory: x265
     - name: Cache FFmpeg
       id: cache-ff
       uses: actions/cache@v2
       with:
         path: ffmpeg
-        key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-ff
+        key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-ff${{env.ffrev}}
     - name: Checkout FFmpeg
-      uses: actions/checkout@v2
-      with:
-        path: ffmpeg
-        repository: FFmpeg/FFmpeg
-        ref: n4.4
+      run: git submodule update --init ffmpeg; mv ffmpeg ..
+      shell: pwsh
+      working-directory: x265
       if: steps.cache-ff.outputs.cache-hit != 'true'
     - name: Cache mimalloc
       id: cache-mi
       uses: actions/cache@v2
       with:
         path: mimalloc
-        key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-mi
+        key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-mi${{env.mirev}}
     - name: Checkout mimalloc
-      uses: actions/checkout@v2
-      with:
-        path: mimalloc
-        repository: microsoft/mimalloc
-        ref: v2.0.2
+      run: git submodule update --init mimalloc; mv mimalloc ..
+      shell: pwsh
+      working-directory: x265
       if: steps.cache-mi.outputs.cache-hit != 'true'
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
