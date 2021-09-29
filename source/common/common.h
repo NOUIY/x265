@@ -42,6 +42,10 @@
 
 #include "x265.h"
 
+#ifdef USE_MIMALLOC
+#include <mimalloc.h>
+#endif
+
 #if ENABLE_PPA && ENABLE_VTUNE
 #error "PPA and VTUNE cannot both be enabled. Disable one of them."
 #endif

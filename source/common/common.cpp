@@ -37,9 +37,6 @@
 
 #include <chrono>
 
-#ifdef USE_MIMALLOC
-#include <mimalloc.h>
-#endif
 
 namespace X265_NS {
 

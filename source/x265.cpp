@@ -269,6 +269,10 @@ int main(int argc, char **argv)
     char** orgArgv = argv;
     get_argv_utf8(&argc, &argv);
 #endif
+#ifdef USE_MIMALLOC
+    mi_option_set_enabled_default(mi_option_large_os_pages, true);
+    mi_option_set_enabled_default(mi_option_page_reset, false);
+#endif
 
     uint8_t numEncodes = 1;
     FILE *abrConfig = NULL;
