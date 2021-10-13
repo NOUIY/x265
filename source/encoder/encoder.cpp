@@ -982,6 +982,7 @@ void Encoder::destroy()
         free((char*)m_param->toneMapFile);
         free((char*)m_param->analysisSave);
         free((char*)m_param->analysisLoad);
+        free((char*)m_param->optionsString);
         PARAM_NS::x265_param_free(m_param);
     }
 }
@@ -6095,4 +6096,3 @@ fail:
     }
     return false;
 }
-

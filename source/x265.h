@@ -1961,6 +1961,9 @@ typedef struct x265_param
 
     /* The offset by which QP is incremented for non-referenced inter-frames before a scenecut when bEnableSceneCutAwareQp is 2 or 3. */
     double    bwdNonRefQpDelta;
+
+    /* The original options string */
+    const char* optionsString;
 } x265_param;
 
 /* x265_param_alloc:

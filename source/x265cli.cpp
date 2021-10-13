@@ -1033,6 +1033,20 @@ namespace X265_NS {
             return true;
         }
         general_log_file(param, this->output->getName(), X265_LOG_INFO, "output file: %s\n", outputfn);
+
+        size_t sz = 4000;
+        char* p = (char*)x265_malloc(sz);
+        param->optionsString = p;
+        p[0] = 0;
+        for (int i = 1; i < argc; ++i) {
+            if (strcat_s(p, sz, argv[i]) || strcat_s(p, sz, " ")) {
+                x265_free(p);
+                param->optionsString = NULL;
+                x265_log(NULL, X265_LOG_ERROR, "options too long\n");
+                return true;
+            }
+        }
+
         return false;
     }
 

@@ -373,6 +373,8 @@ void x265_param_default(x265_param* param)
     param->bEnableFrameDuplication = 0;
     param->dupThreshold = 70;
 
+    param->optionsString = NULL;
+
     /* SVT Hevc Encoder specific params */
     param->bEnableSvtHevc = 0;
     param->svtHevcParam = NULL;
@@ -2159,6 +2161,14 @@ void x265_print_params(x265_param* param)
 char *x265_param2string(x265_param* p, int padx, int pady)
 {
     char *buf, *s;
+
+    if (p->optionsString) {
+        size_t len = strlen(p->optionsString);
+        s = (char*)x265_malloc(len + 1);
+        memcpy(s, p->optionsString, len + 1);
+        return s;
+    }
+
     size_t bufSize = 4000 + p->rc.zoneCount * 64;
     if (p->numaPools)
         bufSize += strlen(p->numaPools);
@@ -2801,6 +2811,9 @@ void x265_copy_params(x265_param* dst, x265_param* src)
     dst->logfLevel = src->logfLevel;
     dst->pgfn = src->pgfn;
     dst->opts = src->opts;
+
+    if (src->optionsString) dst->optionsString = strdup(src->optionsString);
+    else dst->optionsString = NULL;
 
 #ifdef SVT_HEVC
     memcpy(dst->svtHevcParam, src->svtHevcParam, sizeof(EB_H265_ENC_CONFIGURATION));
