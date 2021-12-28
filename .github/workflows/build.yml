@@ -46,19 +46,19 @@ jobs:
       with:
         path: x265
         fetch-depth: 0
-    - name: Cache FFmpeg
-      id: cache-ff
-      uses: actions/cache@v2
-      with:
-        path: ffmpeg
-        key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-ff
-    - name: Checkout FFmpeg
-      uses: actions/checkout@v2
-      with:
-        path: ffmpeg
-        repository: FFmpeg/FFmpeg
-        ref: n4.4
-      if: steps.cache-ff.outputs.cache-hit != 'true'
+#     - name: Cache FFmpeg
+#       id: cache-ff
+#       uses: actions/cache@v2
+#       with:
+#         path: ffmpeg
+#         key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-ff
+#     - name: Checkout FFmpeg
+#       uses: actions/checkout@v2
+#       with:
+#         path: ffmpeg
+#         repository: FFmpeg/FFmpeg
+#         ref: n4.4
+#       if: steps.cache-ff.outputs.cache-hit != 'true'
     - name: Cache mimalloc
       id: cache-mi
       uses: actions/cache@v2
@@ -84,17 +84,17 @@ jobs:
           mingw-w64-${{matrix.toolchain}}-x86_64-toolchain
           mingw-w64-${{matrix.toolchain}}-x86_64-cmake
           mingw-w64-${{matrix.toolchain}}-x86_64-ninja
-    - name: Compile FFmpeg
-      run: |
-        ./configure --enable-gpl --enable-version3 --disable-runtime-cpudetect --disable-all --disable-autodetect --enable-avformat --enable-avcodec --enable-avformat --disable-everything --disable-network --enable-demuxer=mpegts,mov,matroska,h264,hevc --enable-decoder=h264,hevc,ffv1,ffvhuff,huffyuv --enable-protocol=file,pipe --cc=cc --cxx=c++ --cpu=${{matrix.target_cpu}}
-        make -j`nproc`
-      working-directory: ffmpeg
-      if: steps.cache-ff.outputs.cache-hit != 'true'
+#     - name: Compile FFmpeg
+#       run: |
+#         ./configure --enable-gpl --enable-version3 --disable-runtime-cpudetect --disable-all --disable-autodetect --enable-avformat --enable-avcodec --enable-avformat --disable-everything --disable-network --enable-demuxer=mpegts,mov,matroska,h264,hevc --enable-decoder=h264,hevc,ffv1,ffvhuff,huffyuv --enable-protocol=file,pipe --cc=cc --cxx=c++ --cpu=${{matrix.target_cpu}}
+#         make -j`nproc`
+#       working-directory: ffmpeg
+#       if: steps.cache-ff.outputs.cache-hit != 'true'
     - name: Get rid of .dll.a
       run: find /*64/ /usr/ -type f -name "*.dll.a" -print -delete
-    - name: Install FFmpeg
-      run: make install
-      working-directory: ffmpeg
+#     - name: Install FFmpeg
+#       run: make install
+#       working-directory: ffmpeg
     - name: Compile mimalloc
       run: |
         mkdir build
@@ -133,7 +133,7 @@ jobs:
         else
           extra_cflags="-fprofile-instr-generate -fprofile-update=atomic"
         fi
-        cmake -GNinja ../../x265/source -DEXTRA_LIB="x265_8b.a;x265_12b.a" -DEXTRA_LINK_FLAGS=-L. -DLINKED_8BIT=ON -DLINKED_12BIT=ON -DENABLE_HDR10_PLUS=ON -DENABLE_AVISYNTH=OFF -DENABLE_VPYSYNTH=OFF -DHIGH_BIT_DEPTH=ON -DENABLE_SHARED=OFF -DENABLE_LAVF=ON -DENABLE_STATIC_LAVF=ON -DTARGET_CPU=${{matrix.target_cpu}} -DUSE_MIMALLOC=ON -DUSE_LTO=ON "-DCMAKE_CXX_FLAGS=-I../../FFmpeg $extra_cflags" -DCMAKE_EXE_LINKER_FLAGS=-LD:/a/_temp/msys/msys64/usr/local/lib -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
+        cmake -GNinja ../../x265/source -DEXTRA_LIB="x265_8b.a;x265_12b.a" -DEXTRA_LINK_FLAGS=-L. -DLINKED_8BIT=ON -DLINKED_12BIT=ON -DENABLE_HDR10_PLUS=ON -DENABLE_AVISYNTH=OFF -DENABLE_VPYSYNTH=OFF -DHIGH_BIT_DEPTH=ON -DENABLE_SHARED=OFF -DTARGET_CPU=${{matrix.target_cpu}} -DUSE_MIMALLOC=ON -DUSE_LTO=ON "-DCMAKE_CXX_FLAGS=$extra_cflags" -DCMAKE_EXE_LINKER_FLAGS=-LD:/a/_temp/msys/msys64/usr/local/lib -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
         ninja
         strip -s x265.exe
     - name: Package
