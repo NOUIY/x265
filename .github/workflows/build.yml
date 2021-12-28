@@ -46,19 +46,19 @@ jobs:
       with:
         path: x265
         fetch-depth: 0
-#     - name: Cache FFmpeg
-#       id: cache-ff
-#       uses: actions/cache@v2
-#       with:
-#         path: ffmpeg
-#         key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-ff
-#     - name: Checkout FFmpeg
-#       uses: actions/checkout@v2
-#       with:
-#         path: ffmpeg
-#         repository: FFmpeg/FFmpeg
-#         ref: n4.4
-#       if: steps.cache-ff.outputs.cache-hit != 'true'
+    - name: Cache FFmpeg
+      id: cache-ff
+      uses: actions/cache@v2
+      with:
+        path: ffmpeg
+        key: ${{matrix.target_cpu}}-${{matrix.toolchain}}-ff
+    - name: Checkout FFmpeg
+      uses: actions/checkout@v2
+      with:
+        path: ffmpeg
+        repository: FFmpeg/FFmpeg
+        ref: n4.4
+      if: steps.cache-ff.outputs.cache-hit != 'true'
     - name: Cache mimalloc
       id: cache-mi
       uses: actions/cache@v2
@@ -84,17 +84,17 @@ jobs:
           mingw-w64-${{matrix.toolchain}}-x86_64-toolchain
           mingw-w64-${{matrix.toolchain}}-x86_64-cmake
           mingw-w64-${{matrix.toolchain}}-x86_64-ninja
-#     - name: Compile FFmpeg
-#       run: |
-#         ./configure --enable-gpl --enable-version3 --disable-runtime-cpudetect --disable-all --disable-autodetect --enable-avformat --enable-avcodec --enable-avformat --disable-everything --disable-network --enable-demuxer=mpegts,mov,matroska,h264,hevc --enable-decoder=h264,hevc,ffv1,ffvhuff,huffyuv --enable-protocol=file,pipe --cc=cc --cxx=c++ --cpu=${{matrix.target_cpu}}
-#         make -j`nproc`
-#       working-directory: ffmpeg
-#       if: steps.cache-ff.outputs.cache-hit != 'true'
+    - name: Compile FFmpeg
+      run: |
+        ./configure --enable-gpl --enable-version3 --disable-runtime-cpudetect --disable-all --disable-autodetect --enable-avformat --enable-avcodec --enable-avformat --disable-everything --disable-network --enable-demuxer=mpegts,mov,matroska,h264,hevc --enable-decoder=h264,hevc,ffv1,ffvhuff,huffyuv --enable-protocol=file,pipe --cc=cc --cxx=c++ --cpu=${{matrix.target_cpu}}
+        make -j`nproc`
+      working-directory: ffmpeg
+      if: steps.cache-ff.outputs.cache-hit != 'true'
     - name: Get rid of .dll.a
       run: find /*64/ /usr/ -type f -name "*.dll.a" -print -delete
-#     - name: Install FFmpeg
-#       run: make install
-#       working-directory: ffmpeg
+    - name: Install FFmpeg
+      run: make install
+      working-directory: ffmpeg
     - name: Compile mimalloc
       run: |
         mkdir build
